@@ -2,20 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/continuation-writing-helper/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Louder TTS</title>
-    <script type="module" crossorigin src="/assets/index-tPTr0wPA.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-5O5tTyF5.css">
+    <script type="module" crossorigin src="/continuation-writing-helper/assets/index-DHuA3Bjf.js"></script>
+    <link rel="stylesheet" crossorigin href="/continuation-writing-helper/assets/index-B4S59j7G.css">
   </head>
 
   <body class="bg-gradient-to-br h-screen from-main-500 to-main-700 bg-fixed bg-cover">
     <div id="app" class="flex flex-col justify-between h-full">
       <p class="text-xl p-5 text-white">Louder Text to Speech</p>
-      <div class=" mx-[5%] my-[5%] space-x-5 flex md:flex-row flex-col">
+      <div class=" mx-[5%] my-[5%] lg:w-[75%] lg:self-center space-x-5 flex md:flex-row flex-col">
         <div id="text" class="md:w-1/2 w-full h-full">
           <textarea
-            id="input"
+            id="text-to-speak"
             class="w-full h-full min-h-[30vh] resize-none bg-gray-800/25 text-text-100 p-3 rounded-xl focus:outline-none"
             placeholder="A thousand miles begins with a single step here..."
           ></textarea>
@@ -47,16 +47,16 @@
             <div class="grid grid-cols-2 gap-4">
               <!-- 文件上传 -->
               <label
-                class="bg-gray-800/25 border-main-500 rounded-xl flex flex-col items-center justify-center py-4 cursor-pointer transition-all hover:border-main-300 hover:bg-gray-800/30 group"
+                class="bg-gray-800/25 rounded-xl flex flex-col items-center justify-center py-4 cursor-pointer transition-all hover:border-main-300 hover:bg-gray-800/30 group"
               >
                 <input
-                  id="file"
+                  id="voice-upload"
                   type="file"
                   accept="audio/wav"
                   class="opacity-0 absolute"
                 />
                 <svg
-                  class="w-8 h-8 mb-2 text-main-300 transition-colors"
+                  class="w-8 h-8 mb-2 transition-colors"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -75,8 +75,8 @@
 
               <!-- 录音功能 -->
               <button
-                id="record"
-                class="bg-gray-800/25 border-main-500 rounded-xl flex flex-col items-center justify-center py-4 transition-all hover:border-main-300 hover:bg-gray-800/30 group"
+                id="voice-record"
+                class="bg-gray-800/25 rounded-xl flex flex-col items-center justify-center py-4 transition-all hover:border-main-300 hover:bg-gray-800/30 group"
                 type="button"
               >
                 <svg
@@ -94,13 +94,13 @@
                 </svg>
                 <span
                   class="text-sm text-text-100 transition-colors"
-                  id="recordStatus"
+                  id="record-state"
                 >开始录音</span>
               </button>
             </div>
-            <div class="flex flex-col bg-gray-800/25 p-3 rounded-xl">
+            <div class="flex flex-col bg-gray-800/25 p-3 rounded-xl font-semibold">
               <p class="mb-2">待克隆语音</p>
-              <audio controls class="w-full"></audio>
+              <audio controls id="voice-preview" class="w-full"></audio>
             </div>
 
             <!-- 新增训练文本输入 -->
@@ -115,8 +115,8 @@
           <div id="creation" class="space-y-4 hidden peer-checked/creation:block">
             <div class="space-y-4">
               <!-- 性别选择 -->
-              <div class="flex items-center space-x-4">
-                <span class="text-text-200">性别:</span>
+              <div class="bg-gray-800/25 rounded-xl flex flex-col items-start p-3">
+                <span class="text-text-200 font-semibold">性别</span>
                 <label class="flex items-center space-x-2">
                   <input
                     type="radio"
@@ -132,51 +132,52 @@
                     type="radio"
                     name="gender"
                     value="female"
-                    class="accent-main-400 w-4 h-4"
+                    class="accent-main-400 bg-main-200 w-4 h-4"
                   />
                   <span class="text-text-100">女声</span>
                 </label>
               </div>
 
               <!-- 音调语速调整 -->
-              <div class="space-y-4">
-                <div>
-                  <div class="flex justify-between text-text-200 mb-1">
-                    <span>语调</span>
-                    <span>1.0x</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.5"
-                    max="1.5"
-                    step="0.1"
-                    value="1.0"
-                    class="w-full h-2 bg-gray-700 rounded-lg accent-main-400"
-                  />
+              <div class="bg-gray-800/25 rounded-xl p-3">
+                <div class="flex justify-between text-text-200 mb-1">
+                  <span class="font-semibold">语调</span>
+                  <span id="pitch-label">1</span>
                 </div>
+                <input
+                  id="pitch"
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value="1"
+                  class="w-full h-2 bg-gray-700 rounded-lg accent-main-400"
+                />
+              </div>
 
-                <div>
-                  <div class="flex justify-between text-text-200 mb-1">
-                    <span>语速</span>
-                    <span>1.0x</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.8"
-                    max="1.2"
-                    step="0.1"
-                    value="1.0"
-                    class="w-full h-2 bg-gray-700 rounded-lg accent-main-400"
-                  />
+              <div class="bg-gray-800/25 rounded-xl p-3">
+                <div class="flex justify-between text-text-200 mb-1">
+                  <span class="font-semibold">语速</span>
+                  <span id="speed-label">1</span>
                 </div>
+                <input
+                  id="speed"
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value="1"
+                  class="w-full h-2 bg-gray-700 rounded-lg accent-main-400"
+                />
               </div>
             </div>
           </div>
 
           <button
-            class="w-full py-3 bg-gradient-to-r from-main-200 to-main-500 text-text-100 rounded-xl font-bold transition-all hover:brightness-110 active:brightness-90 shadow-lg shadow-main-500/20"
+            id="generate"
+            class="w-full py-3 bg-gradient-to-r from-main-200 to-main-500 text-text-100 rounded-xl font-bold transition-all hover:brightness-110 active:brightness-90 shadow-lg shadow-main-500/20 disabled:grayscale-50"
           >
-            生成语音
+            生成语音：首次拉起服务需要大约一分钟，请耐心等待。
           </button>
 
           <!-- 结果展示区 -->
@@ -186,12 +187,14 @@
           >
             <div class="flex items-center gap-3">
               <audio
+                id="result"
                 controls
                 class="flex-1"
               >
                 <source type="audio/wav" />
               </audio>
               <button
+                id="download"
                 class="px-4 py-2 bg-main-400 hover:bg-main-300 rounded-lg transition-colors"
               >
                 下载
@@ -225,5 +228,10 @@
         </p>
       </div>
     </div>
+
+    <dialog id="error-dialog" class="m-auto p-5 rounded-2xl bg-red-900 text-amber-50">
+      <p id="error-info">An error has occurred. Please try again later.</p>
+      <button id="close-error" class="mt-4 bg-main-400 hover:bg-main-600 rounded-lg px-4 py-2">Close</button>
+    </dialog>
   </body>
 </html>
